@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0cf3ece5-48d4-465a-8916-1fae6c68e97e" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b9bf01a0-d292-42d3-9d3b-801732bec74e" />
+	<flow name="first_successfullFlow" doc:id="8fe51efa-d5ca-4ad2-a477-4d67184827e6" >
+		<http:listener doc:name="Listener" doc:id="14c12793-b5a3-48c4-9f87-8a8640809364" config-ref="HTTP_Listener_config" path="/first"/>
+		<first-successful doc:name="First Successful" doc:id="103ca39c-45c1-40f4-9ddd-eb3135f526f7" >
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="757ef9ad-603e-401b-803d-d008795a8fba" message="This is main node"/>
+				<http:request method="GET" doc:name="Request" doc:id="c5ca05a3-e5ac-40ad-9f92-eb12d3a66333" config-ref="HTTP_Request_configuration" url="http://localhost:8081/firstreq"/>
+			</route>
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="ee50f561-27c8-421c-a007-28f35b326900" message="This is secondary node"/>
+				<http:request method="GET" doc:name="Request" doc:id="32a3b769-a4d7-4235-ae2e-6287e0c07d80" config-ref="HTTP_Request_configuration" url="http://localhost:8081/secondreq1"/>
+			</route>
+		</first-successful>
+	</flow>
+	<flow name="first_successfullFlow1" doc:id="a6ad07ac-94e5-47f9-8b19-755a46677446" >
+		<http:listener doc:name="Listener" doc:id="13a42533-1f5e-4939-96ae-c60877d8b955" config-ref="HTTP_Listener_config" path="firstreq"/>
+		<set-payload value="Req for main node" doc:name="Set Payload" doc:id="283aa90b-e455-4d86-971d-e77fb31087fa" />
+	</flow>
+	<flow name="first_successfullFlow2" doc:id="694bab1d-8512-4e7e-b4a7-75573920ddfe" >
+		<http:listener doc:name="Listener" doc:id="370295ac-a430-49f2-aaff-df1745eba0bc" config-ref="HTTP_Listener_config" path="secondreq"/>
+		<set-payload value="req rec to second node" doc:name="Set Payload" doc:id="ca721839-6d34-4bc9-b947-9910364489d5" />
+	</flow>
+</mule>
